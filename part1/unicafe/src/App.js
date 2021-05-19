@@ -2,13 +2,21 @@ import React, { useState } from "react";
 
 const Header = () => <h1>Give Feedback</h1>;
 
-const Stats = (props) => {
+const EachStats = ({text, stat}) => {
+  return (
+    <p>{text} {stat}</p>
+  )
+}
+
+const Stats = ({goodValue, neutralValue, badValue}) => {
   return (
     <div className="result">
       <h2>Statistics</h2>
-      <p>Good {props.goodValue}</p>
-      <p>Neutral {props.neutralValue}</p>
-      <p>Bad {props.badValue}</p>
+      <EachStats text="Good" stat={goodValue} />
+      <EachStats text="Neutral" stat={neutralValue} />
+      <EachStats text="Bad" stat={badValue} />
+      <EachStats text="Avarage" stat={goodValue - badValue} />
+      <EachStats text="Percentile" stat={goodValue / (goodValue + neutralValue + badValue) * 100} />
     </div>
   );
 };
