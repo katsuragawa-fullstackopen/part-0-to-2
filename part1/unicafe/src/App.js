@@ -2,13 +2,23 @@ import React, { useState } from "react";
 
 const Header = () => <h1>Give Feedback</h1>;
 
-const EachStats = ({text, stat}) => {
+const EachStats = ({ text, stat }) => {
   return (
-    <p>{text} {stat}</p>
-  )
-}
+    <p>
+      {text} {stat}
+    </p>
+  );
+};
 
-const Stats = ({goodValue, neutralValue, badValue}) => {
+const Stats = ({ goodValue, neutralValue, badValue }) => {
+  if (goodValue === 0 && neutralValue === 0 && badValue === 0) {
+    return (
+      <div className="result">
+        <h2>Statistics</h2>
+        <p>No feedback given</p>
+      </div>
+    );
+  }
   return (
     <div className="result">
       <h2>Statistics</h2>
@@ -16,7 +26,10 @@ const Stats = ({goodValue, neutralValue, badValue}) => {
       <EachStats text="Neutral" stat={neutralValue} />
       <EachStats text="Bad" stat={badValue} />
       <EachStats text="Avarage" stat={goodValue - badValue} />
-      <EachStats text="Percentile" stat={goodValue / (goodValue + neutralValue + badValue) * 100} />
+      <EachStats
+        text="Percentile"
+        stat={(goodValue / (goodValue + neutralValue + badValue)) * 100}
+      />
     </div>
   );
 };
