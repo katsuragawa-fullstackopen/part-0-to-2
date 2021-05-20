@@ -4,9 +4,10 @@ const Header = () => <h1>Give Feedback</h1>;
 
 const EachStats = ({ text, stat }) => {
   return (
-    <p>
-      {text} {stat}
-    </p>
+    <tr>
+      <td>{text} </td>
+      <td> {stat}</td>
+    </tr>
   );
 };
 
@@ -22,14 +23,18 @@ const Stats = ({ goodValue, neutralValue, badValue }) => {
   return (
     <div className="result">
       <h2>Statistics</h2>
-      <EachStats text="Good" stat={goodValue} />
-      <EachStats text="Neutral" stat={neutralValue} />
-      <EachStats text="Bad" stat={badValue} />
-      <EachStats text="Avarage" stat={goodValue - badValue} />
-      <EachStats
-        text="Percentile"
-        stat={(goodValue / (goodValue + neutralValue + badValue)) * 100}
-      />
+      <table>
+        <tbody>
+          <EachStats text="Good" stat={goodValue} />
+          <EachStats text="Neutral" stat={neutralValue} />
+          <EachStats text="Bad" stat={badValue} />
+          <EachStats text="Avarage" stat={goodValue - badValue} />
+          <EachStats
+            text="Percentile"
+            stat={`${((goodValue / (goodValue + neutralValue + badValue)) * 100).toFixed(1)} %`}
+          />
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -40,7 +45,6 @@ const Button = ({ handleClick, text }) => {
 
 function App() {
   const updateValue = (feedback, newValue) => {
-    // console.log(feedback, newValue);
     setFeedback({ ...allFeedback, [feedback]: newValue });
   };
   const [allFeedback, setFeedback] = useState({ good: 0, neutral: 0, bad: 0 });
