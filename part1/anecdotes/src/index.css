@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap");
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Lato";
+  margin: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  text-align: left;
+  line-height: 1.5rem;
+  margin: 10px 20px;
+  padding: 20px 50px;
+}
+
+.btn {
+  cursor: pointer;
+  border: 0;
+  border-radius: 15px;
+  background-color: #272727;
+  color: white;
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  object-fit: cover;
+  top: 250px;
+  left: calc(50% - 60px);
+}
