@@ -25,7 +25,6 @@ const App = () => {
   };
 
   const mostVotedIndex = () => {
-    if (points.length === 0) return -1;
     const maxValue = Math.max(...points);
     console.log(maxValue);
     return points.indexOf(maxValue);
