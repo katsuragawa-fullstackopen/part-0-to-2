@@ -11,15 +11,49 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(new Array(6).fill(0));
 
-  // const randomInt = Math.floor(Math.random() * 6);
-  // console.log(randomInt);
+  const handleVote = () => {
+    const p = [...points];
+    p[selected] += 1;
+    setPoints(p);
+    console.log(points);
+  };
+
+  const handleClick = () => {
+    setSelected(Math.floor(Math.random() * 6));
+  };
+
+  const mostVotedIndex = () => {
+    if (points.length === 0) return -1;
+    const maxValue = Math.max(...points);
+    console.log(maxValue);
+    return points.indexOf(maxValue);
+  };
 
   return (
-    <div className="container">
-      <button className="btn" onClick={() => setSelected(Math.floor(Math.random() * 6))}>New Anecdote</button>
-      <p>{anecdotes[selected]}</p>
-    </div>
+    <>
+      <div className="container">
+        <div className="btn-container">
+          <button className="btn" onClick={handleClick}>
+            New Anecdote
+          </button>
+          <button className="btn right" onClick={handleVote}>
+            Vote
+          </button>
+        </div>
+        <h2>Anecdote for the day</h2>
+        <p>{anecdotes[selected]}</p>
+        <p className="votes">Votes: {points[selected]}</p>
+      </div>
+      <div className="container">
+        <h2>Most voted</h2>
+        <p>{anecdotes[mostVotedIndex()]}</p>
+        <p className="votes">
+          <b>With {points[mostVotedIndex()]} votes</b>
+        </p>
+      </div>
+    </>
   );
 };
 

@@ -22,6 +22,13 @@ code {
   padding: 20px 50px;
 }
 
+.btn-container {
+  margin: auto;
+  position: relative;
+  height: 100px;
+  width: 500px;
+}
+
 .btn {
   cursor: pointer;
   border: 0;
@@ -32,6 +39,14 @@ code {
   width: 120px;
   height: 30px;
   object-fit: cover;
-  top: 250px;
-  left: calc(50% - 60px);
+  top: 20%;
+  left: calc(30% - 60px);
+}
+
+.right {
+  left: calc(70% - 60px);
+}
+
+.votes {
+  text-align: center;
 }
