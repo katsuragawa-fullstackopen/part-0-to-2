@@ -1,13 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;700;900&display=swap");
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Roboto", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.container {
+  width: 70%;
+  margin: 60px auto;
+}
+
+.input {
+  padding-top: 10px;
+}
+
+#name {
+  margin-left: 60px;
+  width: 300px;
+}
+
+#number {
+  margin-left: 43px;
+  width: 300px;
+}
+
+.btn {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.btn button {
+  font-weight: 600;
+  border: 0;
+  border-radius: 20px;
+  color: white;
+  background-color: #343434;
+  height: 2rem;
+  width: 80px;
+}
+
+li {
+  margin: 5px 0;
+  list-style: circle;
+}
+
+span {
+  margin-left: 5px;
 }
