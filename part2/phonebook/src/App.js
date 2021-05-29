@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Filter = ({ search, handleSearch }) => (
   <form>
@@ -39,7 +40,7 @@ const Persons = ({ persons, search }) => (
       {persons
         .filter(
           (person) =>
-            person.name.toLocaleLowerCase().includes(search) ||
+            person.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
             person.number.includes(search)
         )
         .map((person) => (
@@ -53,15 +54,16 @@ const Persons = ({ persons, search }) => (
 
 const App = () => {
   // setup hooks
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
   // change the input and set the newName
   const handleNameInput = (e) => {
@@ -85,7 +87,7 @@ const App = () => {
     // create new person object to add
     const newPersonObject = { name: newName, number: newNumber };
     // check if this person already exist
-    if (persons.some((person) => person.name === newPersonObject.name)) {
+    if (persons.some((person) => person.name.toLocaleLowerCase() === newPersonObject.name.toLocaleLowerCase())) {
       window.alert(`${newName} already in the Phonebook`);
     } else {
       // add person to phonebook
