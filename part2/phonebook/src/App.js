@@ -40,7 +40,9 @@ const Persons = ({ persons, search }) => (
       {persons
         .filter(
           (person) =>
-            person.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+            person.name
+              .toLocaleLowerCase()
+              .includes(search.toLocaleLowerCase()) ||
             person.number.includes(search)
         )
         .map((person) => (
@@ -85,15 +87,31 @@ const App = () => {
     // prevent page reload
     e.preventDefault();
     // create new person object to add
-    const newPersonObject = { name: newName, number: newNumber };
+    const newPersonObject = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1,
+    };
+
     // check if this person already exist
-    if (persons.some((person) => person.name.toLocaleLowerCase() === newPersonObject.name.toLocaleLowerCase())) {
+    if (
+      persons.some(
+        (person) =>
+          person.name.toLocaleLowerCase() ===
+          newPersonObject.name.toLocaleLowerCase()
+      )
+    ) {
       window.alert(`${newName} already in the Phonebook`);
     } else {
-      // add person to phonebook
-      setPersons(persons.concat(newPersonObject));
-      setNewName("");
-      setNewNumber("");
+      // add person to phonebook database
+      axios
+        .post("http://localhost:3001/persons", newPersonObject)
+        .then((response) => {
+          console.log(`Add new person: ${response.data.name}`);
+          setPersons(persons.concat(response.data));
+          setNewName("");
+          setNewNumber("");
+        });
     }
   };
 
