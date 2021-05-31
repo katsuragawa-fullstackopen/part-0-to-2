@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import phonebookServices from "./services/phonebook";
 
 const Filter = ({ search, handleSearch }) => (
   <form>
@@ -33,26 +33,24 @@ const Form = ({
   </form>
 );
 
-const Persons = ({ persons, search }) => (
-  <div>
-    <ul>
-      {/* show only persons compatible with the search */}
-      {persons
-        .filter(
-          (person) =>
-            person.name
-              .toLocaleLowerCase()
-              .includes(search.toLocaleLowerCase()) ||
-            person.number.includes(search)
-        )
-        .map((person) => (
+const Persons = ({ persons, search }) => {
+  // callback for filter
+  const filterPerson = (person) =>
+    person.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+    person.number.includes(search);
+  return (
+    <div>
+      <ul>
+        {/* show only persons compatible with the search */}
+        {persons.filter(filterPerson).map((person) => (
           <li key={person.name}>
             {person.name}: <span>{person.number}</span>
           </li>
         ))}
-    </ul>
-  </div>
-);
+      </ul>
+    </div>
+  );
+};
 
 const App = () => {
   // setup hooks
@@ -62,9 +60,7 @@ const App = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    phonebookServices.getContacts().then((contacts) => setPersons(contacts));
   }, []);
 
   // change the input and set the newName
@@ -101,14 +97,15 @@ const App = () => {
           newPersonObject.name.toLocaleLowerCase()
       )
     ) {
+      // if it does, alert
       window.alert(`${newName} already in the Phonebook`);
     } else {
-      // add person to phonebook database
-      axios
-        .post("http://localhost:3001/persons", newPersonObject)
-        .then((response) => {
-          console.log(`Add new person: ${response.data.name}`);
-          setPersons(persons.concat(response.data));
+      // else, add person to phonebook database
+      phonebookServices
+        .createContact(newPersonObject)
+        .then((createdContact) => {
+          console.log(`Add new person: ${createdContact}`);
+          setPersons(persons.concat(createdContact));
           setNewName("");
           setNewNumber("");
         });
