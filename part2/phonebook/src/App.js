@@ -91,6 +91,7 @@ const App = () => {
       number: newNumber,
       id: persons[persons.length - 1].id + 1,
     };
+    console.log(`Created new person object ${newPersonObject.name}`);
 
     // check if this person already exist
     if (
@@ -100,14 +101,35 @@ const App = () => {
           newPersonObject.name.toLocaleLowerCase()
       )
     ) {
-      // if it does, alert
-      window.alert(`${newName} already in the Phonebook`);
+      // if it does, check if user want to update it
+      if (
+        window.confirm(`${newName} already in the Phonebook, wanna update it?`)
+      ) {
+        newPersonObject.id--;
+        phonebookServices
+          .updateContact(newPersonObject)
+          .then((updatedContact) => {
+            console.log(
+              `Update ${updatedContact.name} number to ${updatedContact.number}`
+            );
+            const updatedList = persons
+              .filter((person) => person.id !== newPersonObject.id)
+              .concat(updatedContact);
+            setPersons(updatedList);
+            setNewName("");
+            setNewNumber("");
+          });
+      } else {
+        // if he dont want to update, reset input
+        setNewName("");
+        setNewNumber("");
+      }
     } else {
       // else, add person to phonebook database
       phonebookServices
         .createContact(newPersonObject)
         .then((createdContact) => {
-          console.log(`Add new person: ${createdContact}`);
+          console.log(`Add new person: ${createdContact.name}`);
           setPersons(persons.concat(createdContact));
           setNewName("");
           setNewNumber("");
