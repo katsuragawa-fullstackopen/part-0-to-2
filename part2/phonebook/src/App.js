@@ -1,64 +1,9 @@
 import React, { useEffect, useState } from "react";
 import phonebookServices from "./services/phonebook";
-
-const Filter = ({ search, handleSearch }) => (
-  <form>
-    <div className="search-container">
-      Filter with (name or number){" "}
-      <input value={search} onChange={handleSearch} id="search" />
-    </div>
-  </form>
-);
-
-const Form = ({
-  newName,
-  handleNameInput,
-  newNumber,
-  handleNumberInput,
-  addPerson,
-}) => (
-  <form>
-    <div className="input">
-      Name: <input value={newName} onChange={handleNameInput} id="name" />
-    </div>
-    <div className="input">
-      Number:{" "}
-      <input value={newNumber} onChange={handleNumberInput} id="number" />
-    </div>
-    <div className="btn">
-      <button type="submit" onClick={addPerson}>
-        Add
-      </button>
-    </div>
-  </form>
-);
-
-const Persons = ({ persons, search, deletePerson }) => {
-  // callback for filter
-  const filterPerson = (person) =>
-    person.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
-    person.number.includes(search);
-  return (
-    <div>
-      <ul>
-        {/* show only persons compatible with the search */}
-        {persons.filter(filterPerson).map((person) => (
-          <li key={person.name}>
-            {person.name}: <span>{person.number}</span>
-            <button onClick={() => deletePerson(person.id)} className="del-btn">
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-const Notification = ({ message }) => {
-  if (message === null) return null;
-  return <div className="add-message">{message}</div>;
-};
+import Filter from "./components/Filter";
+import Form from "./components/Form";
+import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   // setup hooks
@@ -66,7 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
-  const [addMsg, setAddMsg] = useState("some message here.");
+  const [alertMsg, setAlertMsg] = useState(null);
+  const [msgStyle, setMsgStyle] = useState();
 
   useEffect(() => {
     phonebookServices.getContacts().then((contacts) => setPersons(contacts));
@@ -111,23 +57,40 @@ const App = () => {
       if (
         window.confirm(`${newName} already in the Phonebook, wanna update it?`)
       ) {
-        newPersonObject.id--;
+        const personToUpdate = persons.find(
+          (person) => person.name === newName
+        );
+        newPersonObject.id = personToUpdate.id;
+        console.log(newPersonObject.id);
         phonebookServices
           .updateContact(newPersonObject)
           .then((updatedContact) => {
             console.log(
-              `Update ${updatedContact.name} number to ${updatedContact.number}`
+              `Update ${updatedContact.id} ${updatedContact.name} number to ${updatedContact.number}`
             );
-            const updatedList = persons
-              .filter((person) => person.id !== newPersonObject.id)
-              .concat(updatedContact);
-            setPersons(updatedList);
+            setPersons(
+              persons.map((person) =>
+                person.id !== updatedContact.id ? person : updatedContact
+              )
+            );
             setNewName("");
             setNewNumber("");
 
-            setAddMsg(`Updated contact ${newPersonObject.name}`);
+            setAlertMsg(`Updated contact ${newPersonObject.name}`);
+            setMsgStyle("add-message")
             setTimeout(() => {
-              setAddMsg(null);
+              setAlertMsg(null);
+            }, 2000);
+          })
+          .catch((error) => {
+            console.log(error);
+            setNewName("");
+            setNewNumber("");
+
+            setAlertMsg(`Sorry, the contact ${newPersonObject.name} was deleted from server`);
+            setMsgStyle("sorry-message")
+            setTimeout(() => {
+              setAlertMsg(null);
             }, 2000);
           });
       } else {
@@ -145,9 +108,10 @@ const App = () => {
           setNewName("");
           setNewNumber("");
 
-          setAddMsg(`Created new contact ${newPersonObject.name}`);
+          setAlertMsg(`Created new contact ${newPersonObject.name}`);
+          setMsgStyle("add-message")
           setTimeout(() => {
-            setAddMsg(null);
+            setAlertMsg(null);
           }, 2000);
         });
     }
@@ -177,7 +141,7 @@ const App = () => {
         handleNumberInput={handleNumberInput}
         addPerson={addPerson}
       />
-      <Notification message={addMsg} />
+      <Notification message={alertMsg} style={msgStyle} />
       <h2>Numbers</h2>
       <Persons persons={persons} search={search} deletePerson={deletePerson} />
     </div>
