@@ -55,12 +55,18 @@ const Persons = ({ persons, search, deletePerson }) => {
   );
 };
 
+const Notification = ({ message }) => {
+  if (message === null) return null;
+  return <div className="add-message">{message}</div>;
+};
+
 const App = () => {
   // setup hooks
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+  const [addMsg, setAddMsg] = useState("some message here.");
 
   useEffect(() => {
     phonebookServices.getContacts().then((contacts) => setPersons(contacts));
@@ -118,6 +124,11 @@ const App = () => {
             setPersons(updatedList);
             setNewName("");
             setNewNumber("");
+
+            setAddMsg(`Updated contact ${newPersonObject.name}`);
+            setTimeout(() => {
+              setAddMsg(null);
+            }, 2000);
           });
       } else {
         // if he dont want to update, reset input
@@ -133,6 +144,11 @@ const App = () => {
           setPersons(persons.concat(createdContact));
           setNewName("");
           setNewNumber("");
+
+          setAddMsg(`Created new contact ${newPersonObject.name}`);
+          setTimeout(() => {
+            setAddMsg(null);
+          }, 2000);
         });
     }
   };
@@ -161,6 +177,7 @@ const App = () => {
         handleNumberInput={handleNumberInput}
         addPerson={addPerson}
       />
+      <Notification message={addMsg} />
       <h2>Numbers</h2>
       <Persons persons={persons} search={search} deletePerson={deletePerson} />
     </div>
