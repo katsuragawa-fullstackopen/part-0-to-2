@@ -33,7 +33,7 @@ const Form = ({
   </form>
 );
 
-const Persons = ({ persons, search }) => {
+const Persons = ({ persons, search, deletePerson }) => {
   // callback for filter
   const filterPerson = (person) =>
     person.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
@@ -45,6 +45,9 @@ const Persons = ({ persons, search }) => {
         {persons.filter(filterPerson).map((person) => (
           <li key={person.name}>
             {person.name}: <span>{person.number}</span>
+            <button onClick={() => deletePerson(person.id)} className="del-btn">
+              Delete
+            </button>
           </li>
         ))}
       </ul>
@@ -86,7 +89,7 @@ const App = () => {
     const newPersonObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
+      id: persons[persons.length - 1].id + 1,
     };
 
     // check if this person already exist
@@ -112,6 +115,19 @@ const App = () => {
     }
   };
 
+  // event handler for deleting contacts
+  const deletePerson = (id) => {
+    const personToDelete = persons.find((person) => person.id === id);
+    console.log(personToDelete);
+    if (window.confirm(`Do you want to delete entry ${personToDelete.name}`)) {
+      console.log(`Delete id: ${id}`);
+      phonebookServices.deleteContact(id).then(() => {
+        const removedList = persons.filter((person) => person.id !== id);
+        setPersons(removedList);
+      });
+    }
+  };
+
   return (
     <div className="container">
       <h2>Phonebook</h2>
@@ -124,7 +140,7 @@ const App = () => {
         addPerson={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} search={search} />
+      <Persons persons={persons} search={search} deletePerson={deletePerson} />
     </div>
   );
 };

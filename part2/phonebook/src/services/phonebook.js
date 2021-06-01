@@ -12,6 +12,11 @@ const createContact = (contact) => {
   return request.then((response) => response.data);
 };
 
-const phonebookServices = { getContacts, createContact };
+const deleteContact = (id) => {
+  const request = axios.delete(`${url}/${id}`);
+  return request;
+};
+
+const phonebookServices = { getContacts, createContact, deleteContact };
 
 export default phonebookServices;
